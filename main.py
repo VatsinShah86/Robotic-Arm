@@ -71,8 +71,7 @@ class Robot:
         # else:
         #     print("No unique theta 2 within constraints")
         #     return 0
-        theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.L3*sin(theta3_1)),(self.L2 + self.L3*np.cos(theta3_1)))
-        theta2_2 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.L3*sin(theta3_2)),(self.L2 + self.L3*np.cos(theta3_2)))
+        theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_1)),(self.a2 + self.a3*np.cos(theta3_1)))
         # Choosing the theta1 that is in permissible range
         if theta1_1 >= 0 and theta1_1 <= np.pi:
             theta1 = theta1_1
@@ -81,8 +80,8 @@ class Robot:
 
         elif theta1_2 >= 0 and theta1_2 <= np.pi:
             theta1 = theta1_2
-            theta2 = theta2_2
-            theta3 = theta3_2
+            theta2 = np.pi-theta2_1
+            theta3 = theta3_1
 
         else:
             print("No unique theta 1 within constraints")
@@ -129,28 +128,25 @@ def set_angle_3(ang):
     servo.move_servo_3(ang)
 
 if __name__ == "__main__":
-    set_angle_1(0)
-    set_angle_2(0)
-    set_angle_3(0)
+    # set_angle_1(0)
+    # set_angle_2(0)
+    # set_angle_3(0)
 
     # sleep(5)
     robot = Robot()
-    # set_angle_1(90)
-    # set_angle_2(90)
-    # set_angle_3(90)
-    # Example usage:
-    pWx = -(robot.a2+robot.a3) # X position of the end-effector
-    pWy = 0 # Y position of the end-effector
+    pWx = 0 # X position of the end-effector
+    pWy = -(robot.a2+robot.a3) # Y position of the end-effector
     pWz = robot.a1  # Z position of the end-effector
     
 
     solution = robot.IK(pWx, pWy, pWz)
+
     if solution != 0:
         print(f"theta1: {solution['theta1']}")
         print(f"theta2: {solution['theta2']}")
         print(f"theta3: {solution['theta3']}")
         
-        # set_angle_1(solution['theta1'])
-        # set_angle_2(solution['theta2'])
-        # set_angle_3(solution['theta3'])
+    #     set_angle_1(solution['theta1'])
+    #     set_angle_2(solution['theta2'])
+    #     set_angle_3(solution['theta3'])
     # sleep(10)
