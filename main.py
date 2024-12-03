@@ -13,10 +13,9 @@ class Robot:
         print("creating FK")
 
     def IK(self, pWx, pWy, pWz):
-        # Moving pWz from frame 1 to frame 2
+        # Moving pWz from frame 0 to frame 1
         pWz -= self.a1
-        # Step 1: Calculate cos(θ3) and sin(θ3)
-        r = np.sqrt(pWx**2 + pWy**2 + pWz**2)  # Distance from the base to the end-effector
+        # Calculating cos(theta3)
         c3 = (pWx**2 + pWy**2 + pWz**2 - self.a2**2 - self.a3**2) / (2 * self.a2 * self.a3)
         
         # Check for the validity of the solution
@@ -24,73 +23,70 @@ class Robot:
             print("Point outside workspace")
             return 0 
         
-        s3_pos = np.sqrt(1 - c3**2)  # sin(θ3) for the first solution
-        s3_neg = -s3_pos            # sin(θ3) for the second solution
+        s3_pos = np.sqrt(1 - c3**2)  # sin(theta3) for the first solution
+        s3_neg = -s3_pos            # sin(theta3) for the second solution
 
-        # Step 2: Calculate θ3 (select the one with smallest angular displacement)
-        theta3_1 = np.arctan2(s3_pos, c3)  # First solution for θ3
-        theta3_2 = np.arctan2(s3_neg, c3)  # Second solution for θ3
+        # Calculating theta3
+        theta3_1 = np.arctan2(s3_pos, c3)  # First solution for theta3
+        theta3_2 = np.arctan2(s3_neg, c3)  # Second solution for theta3
 
-        # Choose the smallest angular displacement solution for θ3
-        # if np.abs(theta3_1) < np.abs(theta3_2):
+        # # Choosing the theta3 that is in permissible range
+        # if theta3_1 >= 0 and theta3_1 <= np.pi:
         #     theta3 = theta3_1
-        # else:
+
+        # elif theta3_2 >= 0 and theta3_2 <= np.pi:
         #     theta3 = theta3_2
-        if theta3_1 >= 0 and theta3_1 <= np.pi:
-            theta3 = theta3_1
+        # else:
+        #     print("No unique theta 3 within constraints")
+        #     return 0
+        # Calculating theta1
+        theta1_1 = np.arctan2(pWy, pWx)  # First solution for theta1
+        theta1_2 = np.arctan2(-pWy, -pWx)  # Second solution for theta1
 
-        elif theta3_2 >= 0 and theta3_2 <= np.pi:
-            theta3 = theta3_2
-        else:
-            print("No unique theta 3 within constraints")
-            return 0
+        # # Calculating c2 and s2 for theta2
+        # c2_pos = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_pos
+        # s2_pos = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_pos
+        # c2_neg = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_neg
+        # s2_neg = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_neg
         
-        # Step 3: Calculate c2 and s2 for θ2
-        denom = self.a2**2 + self.a3**2 + 2 * self.a2 * self.a3 * c3
-        c2_pos = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_pos
-        s2_pos = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_pos
-        c2_neg = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_neg
-        s2_neg = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_neg
+        # # Calculating theta2
+        # theta2_1 = np.arctan2(s2_pos, c2_pos)
+        # theta2_2 = np.arctan2(s2_neg, c2_neg)
+        # theta2_3 = np.arctan2(s2_pos, c2_neg)
+        # theta2_4 = np.arctan2(s2_neg, c2_pos)
         
-        # Calculate θ2 (choose the solution with smallest angular displacement)
-        theta2_1 = np.arctan2(s2_pos, c2_pos)
-        theta2_2 = np.arctan2(s2_neg, c2_neg)
-        theta2_3 = np.arctan2(s2_pos, c2_neg)
-        theta2_4 = np.arctan2(s2_neg, c2_pos)
+        # # Choosing the theta2 that is in permissible range
+        # if theta2_1 >= 0 and theta2_1 <= np.pi:
+        #     theta2 = theta2_1
+
+        # elif theta2_2 >= 0 and theta2_2 <= np.pi:
+        #     theta2 = theta2_2
+
+        # elif theta2_3 >= 0 and theta2_3 <= np.pi:
+        #     theta2 = theta2_3
+
+        # elif theta2_4 >= 0 and theta2_4 <= np.pi:
+        #     theta2 = theta2_4
         
-        # Choose the solution for θ2 that minimizes joint displacement (smallest θ2)
-        # possible_theta2 = [theta2_1, theta2_2, theta2_3, theta2_4]
-        # theta2 = min(possible_theta2, key=lambda x: np.abs(x))  # Minimize the angular displacement
-        if theta2_1 >= 0 and theta2_1 <= np.pi:
-            theta2 = theta2_1
-
-        elif theta2_2 >= 0 and theta2_2 <= np.pi:
-            theta2 = theta2_2
-
-        elif theta2_3 >= 0 and theta2_3 <= np.pi:
-            theta2 = theta2_3
-        elif theta2_4 >= 0 and theta2_4 <= np.pi:
-            theta2 = theta2_4
-        
-        else:
-            print("No unique theta 2 within constraints")
-            return 0
-
-        # Step 4: Calculate θ1 (choose the solution with smallest angular displacement)
-        theta1_1 = np.arctan2(pWy, pWx)  # First solution for θ1
-        theta1_2 = np.arctan2(-pWy, -pWx)  # Second solution for θ1
-        # Choose the smallest angular displacement solution for θ1
-
+        # else:
+        #     print("No unique theta 2 within constraints")
+        #     return 0
+        theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.L3*sin(theta3_1)),(self.L2 + self.L3*np.cos(theta3_1)))
+        theta2_2 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.L3*sin(theta3_2)),(self.L2 + self.L3*np.cos(theta3_2)))
+        # Choosing the theta1 that is in permissible range
         if theta1_1 >= 0 and theta1_1 <= np.pi:
             theta1 = theta1_1
+            theta2 = theta2_1
+            theta3 = theta3_1
 
         elif theta1_2 >= 0 and theta1_2 <= np.pi:
             theta1 = theta1_2
+            theta2 = theta2_2
+            theta3 = theta3_2
 
         else:
             print("No unique theta 1 within constraints")
             return 0
-        
         return {
             "theta1": np.rad2deg(theta1),
             "theta2": np.rad2deg(theta2),
