@@ -32,9 +32,9 @@ def move_servo_2(val):
     servo2.angle = val
 
 def move_servo_3(val):
-    if val>180:
+    if val>90:
         val = 180
-    elif val<0:
+    elif val<-900:
         val = 0
     servo3.angle = val
 

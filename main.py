@@ -72,16 +72,33 @@ class Robot:
         #     print("No unique theta 2 within constraints")
         #     return 0
         theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_1)),(self.a2 + self.a3*np.cos(theta3_1)))
+        theta2_2 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_2)),(self.a2 + self.a3*np.cos(theta3_2)))
         # Choosing the theta1 that is in permissible range
-        if theta1_1 >= 0 and theta1_1 <= np.pi:
-            theta1 = theta1_1
+
+        if theta2_1 >= 0 and theta2_1 <= np.pi and theta3_1 >= -np.pi/2 and theta3_1 <= np.pi/2:
             theta2 = theta2_1
             theta3 = theta3_1
 
+        else:
+            theta2 = theta2_2
+            theta3 = theta3_2
+        print(theta3_1, theta3_2)
+
+        if abs(theta3_1) > np.pi/2 and abs(theta3_2) > np.pi/2:
+            print("No unique theta 3 within constraints")
+            return 0
+
+        if abs(theta2_1) > 0 and abs(theta2_2) > np.pi:
+            print("No unique theta 2 within constraints")
+            return 0
+
+        if theta1_1 >= 0 and theta1_1 <= np.pi:
+            theta1 = theta1_1
+
         elif theta1_2 >= 0 and theta1_2 <= np.pi:
             theta1 = theta1_2
-            theta2 = np.pi-theta2_1
-            theta3 = theta3_1
+            theta2 = np.pi-theta2
+            theta3 = -theta3
 
         else:
             print("No unique theta 1 within constraints")
@@ -128,15 +145,15 @@ def set_angle_3(ang):
     servo.move_servo_3(ang)
 
 if __name__ == "__main__":
-    # set_angle_1(0)
-    # set_angle_2(0)
-    # set_angle_3(0)
+    set_angle_1(0)
+    set_angle_2(0)
+    set_angle_3(0)
 
-    # sleep(5)
+    sleep(5)
     robot = Robot()
-    pWx = 0 # X position of the end-effector
-    pWy = -(robot.a2+robot.a3) # Y position of the end-effector
-    pWz = robot.a1  # Z position of the end-effector
+    pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = -(robot.a2+robot.a3)/np.sqrt(2)/1.2 # Y position of the end-effector
+    pWz = -60  # Z position of the end-effector
     
 
     solution = robot.IK(pWx, pWy, pWz)
@@ -146,7 +163,7 @@ if __name__ == "__main__":
         print(f"theta2: {solution['theta2']}")
         print(f"theta3: {solution['theta3']}")
         
-    #     set_angle_1(solution['theta1'])
-    #     set_angle_2(solution['theta2'])
-    #     set_angle_3(solution['theta3'])
-    # sleep(10)
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3'])
+    sleep(10)
