@@ -15,7 +15,7 @@ from time import sleep
 
 servo1 = AngularServo(18, min_angle = 0, max_angle = 180, min_pulse_width=0.0008, max_pulse_width=0.0022)
 servo2 = AngularServo(20, min_angle = 0, max_angle = 180, min_pulse_width=0.0008, max_pulse_width=0.0022)
-servo3 = AngularServo(21, min_angle = 0, max_angle = 180, min_pulse_width=0.0008, max_pulse_width=0.0022)
+servo3 = AngularServo(21, min_angle = -90, max_angle = 90, min_pulse_width=0.0008, max_pulse_width=0.0022)
 
 def move_servo_1(val):
     if val>180:

@@ -129,9 +129,9 @@ def set_angle_3(ang):
     servo.move_servo_3(ang)
 
 if __name__ == "__main__":
-    # set_angle_1(90)
-    # set_angle_2(90)
-    # set_angle_3(90)
+    set_angle_1(0)
+    set_angle_2(0)
+    set_angle_3(0)
 
     # sleep(5)
     robot = Robot()
