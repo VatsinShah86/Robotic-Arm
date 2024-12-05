@@ -15,6 +15,7 @@ class Robot:
     def IK(self, pWx, pWy, pWz):
         # Moving pWz from frame 0 to frame 1
         pWz -= self.a1
+
         # Calculating cos(theta3)
         c3 = (pWx**2 + pWy**2 + pWz**2 - self.a2**2 - self.a3**2) / (2 * self.a2 * self.a3)
         
@@ -23,86 +24,48 @@ class Robot:
             print("Point outside workspace")
             return 0 
         
+        # Calculating possible values for sin(theta3)
         s3_pos = np.sqrt(1 - c3**2)  # sin(theta3) for the first solution
         s3_neg = -s3_pos            # sin(theta3) for the second solution
 
-        # Calculating theta3
+        # Calculating possible values for theta3
         theta3_1 = np.arctan2(s3_pos, c3)  # First solution for theta3
         theta3_2 = np.arctan2(s3_neg, c3)  # Second solution for theta3
 
-        # # Choosing the theta3 that is in permissible range
-        # if theta3_1 >= 0 and theta3_1 <= np.pi:
-        #     theta3 = theta3_1
+        # Calculating possible values for theta2
+        theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_1)),(self.a2 + self.a3*np.cos(theta3_1)))
+        theta2_2 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_2)),(self.a2 + self.a3*np.cos(theta3_2)))
 
-        # elif theta3_2 >= 0 and theta3_2 <= np.pi:
-        #     theta3 = theta3_2
-        # else:
-        #     print("No unique theta 3 within constraints")
-        #     return 0
-        # Calculating theta1
+        # Calculating possible values for theta1
         theta1_1 = np.arctan2(pWy, pWx)  # First solution for theta1
         theta1_2 = np.arctan2(-pWy, -pWx)  # Second solution for theta1
 
-        # # Calculating c2 and s2 for theta2
-        # c2_pos = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_pos
-        # s2_pos = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_pos
-        # c2_neg = (pWx**2 + pWy**2) * (self.a2 + self.a3 * c3) + pWz * self.a3 * s3_neg
-        # s2_neg = pWz * (self.a2 + self.a3 * c3) - np.sqrt(pWx**2 + pWy**2) * self.a3 * s3_neg
-        
-        # # Calculating theta2
-        # theta2_1 = np.arctan2(s2_pos, c2_pos)
-        # theta2_2 = np.arctan2(s2_neg, c2_neg)
-        # theta2_3 = np.arctan2(s2_pos, c2_neg)
-        # theta2_4 = np.arctan2(s2_neg, c2_pos)
-        
-        # # Choosing the theta2 that is in permissible range
-        # if theta2_1 >= 0 and theta2_1 <= np.pi:
-        #     theta2 = theta2_1
-
-        # elif theta2_2 >= 0 and theta2_2 <= np.pi:
-        #     theta2 = theta2_2
-
-        # elif theta2_3 >= 0 and theta2_3 <= np.pi:
-        #     theta2 = theta2_3
-
-        # elif theta2_4 >= 0 and theta2_4 <= np.pi:
-        #     theta2 = theta2_4
-        
-        # else:
-        #     print("No unique theta 2 within constraints")
-        #     return 0
-        theta2_1 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_1)),(self.a2 + self.a3*np.cos(theta3_1)))
-        theta2_2 = np.arctan2(pWz,np.sqrt(pWx**2 + pWy**2)) - np.arctan2((self.a3*np.sin(theta3_2)),(self.a2 + self.a3*np.cos(theta3_2)))
-        # Choosing the theta1 that is in permissible range
-
+        # Choosing the combination of theta2 and thata3 values in respective permissible ranges
         if theta2_1 >= 0 and theta2_1 <= np.pi and theta3_1 >= -np.pi/2 and theta3_1 <= np.pi/2:
             theta2 = theta2_1
             theta3 = theta3_1
 
-        else:
+        elif theta2_2 >= 0 and theta2_2 <= np.pi and theta3_2 >= -np.pi/2 and theta3_2 <= np.pi/2:
             theta2 = theta2_2
             theta3 = theta3_2
+        else:
+            print("No unique combination of theta 2 and theta 3 within constraints")
+            return 0
+
         print(theta3_1, theta3_2)
 
-        if abs(theta3_1) > np.pi/2 and abs(theta3_2) > np.pi/2:
-            print("No unique theta 3 within constraints")
-            return 0
-
-        if abs(theta2_1) > 0 and abs(theta2_2) > np.pi:
-            print("No unique theta 2 within constraints")
-            return 0
-
+        # Choosing theta1 in permissible range and making changes to theta2 and theta3 to accomodate for it if necessary
         if theta1_1 >= 0 and theta1_1 <= np.pi:
             theta1 = theta1_1
-
         elif theta1_2 >= 0 and theta1_2 <= np.pi:
             theta1 = theta1_2
             theta2 = np.pi-theta2
             theta3 = -theta3
-
         else:
             print("No unique theta 1 within constraints")
             return 0
+        
+        # Returning successfully calculated theta values
         return {
             "theta1": np.rad2deg(theta1),
             "theta2": np.rad2deg(theta2),
@@ -165,5 +128,5 @@ if __name__ == "__main__":
         
         set_angle_1(solution['theta1'])
         set_angle_2(solution['theta2'])
-        set_angle_3(-solution['theta3'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
     sleep(10)
