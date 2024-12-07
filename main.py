@@ -4,13 +4,9 @@ import numpy as np
 class Robot:
     def __init__(self):
         print("created robot")
-        self.FK()
         self.a1 = 38.55    # Length of the first link
         self.a2 = 120      # Length of the second link
         self.a3 = 187.75   # Length of the third link
-
-    def FK(self):
-        print("creating FK")
 
     def IK(self, pWx, pWy, pWz):
         # Moving pWz from frame 0 to frame 1
@@ -107,20 +103,32 @@ def set_angle_2(ang):
 def set_angle_3(ang):
     servo.move_servo_3(ang)
 
+def set_angle_4(ang):
+    servo.move_servo_4(ang)
+
+def open_gripper():
+    set_angle_4(-30)
+
+def close_gripper():
+    set_angle_4(-90)
 if __name__ == "__main__":
     set_angle_1(0)
     set_angle_2(0)
     set_angle_3(0)
+    open_gripper()
 
-    sleep(5)
+    sleep(3)
+
+    # Define Robot
     robot = Robot()
     pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
     pWy = -(robot.a2+robot.a3)/np.sqrt(2)/1.2 # Y position of the end-effector
     pWz = -60  # Z position of the end-effector
     
-
+    # Run inverse kinematics algorithm to find a solution
     solution = robot.IK(pWx, pWy, pWz)
 
+    # If a solution exists, move robot to location
     if solution != 0:
         print(f"theta1: {solution['theta1']}")
         print(f"theta2: {solution['theta2']}")
@@ -129,4 +137,31 @@ if __name__ == "__main__":
         set_angle_1(solution['theta1'])
         set_angle_2(solution['theta2'])
         set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
-    sleep(10)
+    sleep(3)
+
+    # Close Gripper
+    close_gripper()
+    sleep(3)
+
+    # Move to a new location
+    pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
+    pWz = -60  # Z position of the end-effector
+    
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    # Open Gripper
+    open_gripper()
+    sleep(3)
