@@ -51,6 +51,7 @@ classdef robot
                 theta3 = theta3_2;
             else
                 disp("No unique combination of theta 2 and theta 3 within constraints")
+                return
             end
 
             % Choosing the theta1 value in permissible range and making changes to theta2 and theta3 to accomodate for it if necessary
