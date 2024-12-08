@@ -111,6 +111,7 @@ def open_gripper():
 
 def close_gripper():
     set_angle_4(-90)
+
 if __name__ == "__main__":
     set_angle_1(0)
     set_angle_2(0)
@@ -121,6 +122,8 @@ if __name__ == "__main__":
 
     # Define Robot
     robot = Robot()
+
+    
     pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
     pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
     pWz = 0  # Z position of the end-effector

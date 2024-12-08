@@ -21,7 +21,6 @@ classdef robot
             
             % Check for the validity of the solution
             if abs(c3) > 1
-                c3
                 disp("Point outside workspace");
                 return;
             end

@@ -15,7 +15,7 @@ L(2) = Link('revolute', 'd', 0, 'a', L2, 'alpha', 0);
 L(3) = Link('revolute', 'd', 0, 'a', L3, 'alpha', 0);
 
 % Combine Links into SerialLink Robot Model
-robot = SerialLink(L, 'name', '3DOF_Robot');
+robot = SerialLink(L, 'name', '3DOF Robot');
 
 % Define Joint Angles (example configuration, radians)
 q = [deg2rad(0) deg2rad(0) deg2rad(0)]; 
