@@ -11,7 +11,7 @@ L(3) = Link('revolute', 'd', 0, 'a', L3, 'alpha', 0);
 robot = SerialLink(L, 'name', '3DOF_Robot');
 % Define Joint Angle Ranges with Steps
 theta1_min = 0; theta1_max = pi; theta1_step = 0.14; % Joint 1
-theta2_min = -pi/2; theta2_max = pi/2; theta2_step = 0.14; % Joint 2
+theta2_min = 0; theta2_max = pi; theta2_step = 0.14; % Joint 2
 theta3_min = -pi/2; theta3_max = pi/2; theta3_step = 0.14 ; % Joint 3
 % Generate Ranges Dynamically
 theta1_range = theta1_min:theta1_step:theta1_max;
@@ -38,5 +38,5 @@ grid on;
 xlabel('X-axis');
 ylabel('Y-axis');
 zlabel('Z-axis');
-title('3-DOF Robotic Arm Workspace');
+title('Robotic Arm Workspace');
 axis equal;
