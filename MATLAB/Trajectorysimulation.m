@@ -2,7 +2,7 @@ clear;
 close;
 clc;
 % Define Link Lengths
-L1 = 65;
+L1 = 38.55;
 L2 = 120;
 L3 = 187.75;
 
