@@ -121,10 +121,30 @@ if __name__ == "__main__":
 
     # Define Robot
     robot = Robot()
-    pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
-    pWy = -(robot.a2+robot.a3)/np.sqrt(2)/1.2 # Y position of the end-effector
+    pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
+    pWz = 0  # Z position of the end-effector
+
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    # Define Robot
+    robot = Robot()
+    pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
     pWz = -60  # Z position of the end-effector
-    
+
     # Run inverse kinematics algorithm to find a solution
     solution = robot.IK(pWx, pWy, pWz)
 
@@ -144,9 +164,9 @@ if __name__ == "__main__":
     sleep(3)
 
     # Move to a new location
-    pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
     pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
-    pWz = -60  # Z position of the end-effector
+    pWz = robot.a1 + 20  # Z position of the end-effector
     
     # Run inverse kinematics algorithm to find a solution
     solution = robot.IK(pWx, pWy, pWz)
@@ -164,4 +184,113 @@ if __name__ == "__main__":
 
     # Open Gripper
     open_gripper()
+    sleep(3)
+
+    pWx = 0 # X position of the end-effector
+    pWy = 0 # Y position of the end-effector
+    pWz = robot.a1 + robot.a2 + robot.a3 # Z position of the end-effector
+    
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    # Move to a new location
+    pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
+    pWz = robot.a1 + 60  # Z position of the end-effector
+    
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+
+    # Move to a new location
+    pWx = -(robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
+    pWz = robot.a1 + 10  # Z position of the end-effector
+    
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    # Close Gripper
+    close_gripper()
+    sleep(3)
+
+    
+    pWx = 0 # X position of the end-effector
+    pWy = 0 # Y position of the end-effector
+    pWz = robot.a1 + robot.a2 + robot.a3 # Z position of the end-effector
+    
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    pWx = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # X position of the end-effector
+    pWy = (robot.a2+robot.a3)/np.sqrt(2)/1.1 # Y position of the end-effector
+    pWz = -50  # Z position of the end-effector
+
+    # Run inverse kinematics algorithm to find a solution
+    solution = robot.IK(pWx, pWy, pWz)
+
+    # If a solution exists, move robot to location
+    if solution != 0:
+        print(f"theta1: {solution['theta1']}")
+        print(f"theta2: {solution['theta2']}")
+        print(f"theta3: {solution['theta3']}")
+        
+        set_angle_1(solution['theta1'])
+        set_angle_2(solution['theta2'])
+        set_angle_3(-solution['theta3']) # Necessary as the axis of rotation of servo is opposite of the axis of rotation defined for this joint
+    sleep(3)
+
+    # Open Gripper
+    open_gripper()
+    sleep(3)
+
+    set_angle_1(0)
+    set_angle_2(0)
+    set_angle_3(0)
+    open_gripper()
+
     sleep(3)
